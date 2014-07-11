@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1265.2">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">import webbrowser</p>
+<p class="p1">import os</p>
+<p class="p1">import re</p>
+<p class="p2"><br></p>
+<p class="p1"># Styles and scripting for the page</p>
+<p class="p1">main_page_head = '''</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="utf-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Fresh Tomatoes!&lt;/title&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Bootstrap 3 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="http://code.jquery.com/jquery-1.10.1.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style type="text/css" media="screen"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding-top: 80px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#trailer .modal-dialog {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 200px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 640px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 480px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hanging-close {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>top: -12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>right: -12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>z-index: 9001;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#trailer-video {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.movie-tile {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding-top: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.movie-tile:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #EEE;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.scale-media {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding-bottom: 56.25%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.scale-media iframe {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>top: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: white;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script type="text/javascript" charset="utf-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Pause the video when the modal is closed</p>
+<p class="p1"><span class="Apple-converted-space">        </span>$(document).on('click', '.hanging-close, .modal-backdrop, .modal', function (event) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Remove the src so the player itself gets removed, as this is the only</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// reliable way to ensure the video stops playing in IE</p>
+<p class="p1"><span class="Apple-converted-space">            </span>$("#trailer-video-container").empty();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Start playing the video whenever the trailer modal is opened</p>
+<p class="p1"><span class="Apple-converted-space">        </span>$(document).on('click', '.movie-tile', function (event) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>var trailerYouTubeId = $(this).attr('data-trailer-youtube-id')</p>
+<p class="p1"><span class="Apple-converted-space">            </span>var sourceUrl = 'http://www.youtube.com/embed/' + trailerYouTubeId + '?autoplay=1&amp;html5=1';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>$("#trailer-video-container").empty().append($("&lt;iframe&gt;&lt;/iframe&gt;", {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>'id': 'trailer-video',</p>
+<p class="p1"><span class="Apple-converted-space">              </span>'type': 'text-html',</p>
+<p class="p1"><span class="Apple-converted-space">              </span>'src': sourceUrl,</p>
+<p class="p1"><span class="Apple-converted-space">              </span>'frameborder': 0</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Animate in the movies when the page loads</p>
+<p class="p1"><span class="Apple-converted-space">        </span>$(document).ready(function () {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>$('.movie-tile').hide().first().show("fast", function showNext() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>$(this).next("div").show("fast", showNext);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">'''</p>
+<p class="p2"><br></p>
+<p class="p1"># The main page layout and title bar</p>
+<p class="p1">main_page_content = '''</p>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Trailer Video Modal --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="modal" id="trailer"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="modal-dialog"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="modal-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;a href="#" class="hanging-close" data-dismiss="modal" aria-hidden="true"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;img src="https://lh5.ggpht.com/v4-628SilF0HtHuHdu5EzxD7WRqOrrTIDi_MhEG6_qkNtUK5Wg7KPkofp_VJoF7RS2LhxwEFCO1ICHZlc-o_=s0#w=24&amp;h=24"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="scale-media" id="trailer-video-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Main Page Content --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="navbar navbar-inverse navbar-fixed-top" role="navigation"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="navbar-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;a class="navbar-brand" href="#"&gt;Fresh Tomatoes Movie Trailers&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{movie_tiles}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+<p class="p1">'''</p>
+<p class="p2"><br></p>
+<p class="p1"># A single movie entry html template</p>
+<p class="p1">movie_tile_content = '''</p>
+<p class="p1">&lt;div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="{trailer_youtube_id}" data-toggle="modal" data-target="#trailer"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;img src="{poster_image_url}" width="220" height="342"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;{movie_title}&lt;/h2&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p1">'''</p>
+<p class="p2"><br></p>
+<p class="p1">def create_movie_tiles_content(movies):</p>
+<p class="p1"><span class="Apple-converted-space">    </span># The HTML content for this section of the page</p>
+<p class="p1"><span class="Apple-converted-space">    </span>content = ''</p>
+<p class="p1"><span class="Apple-converted-space">    </span>for movie in movies:</p>
+<p class="p1"><span class="Apple-converted-space">        </span># Extract the youtube ID from the url</p>
+<p class="p1"><span class="Apple-converted-space">        </span>youtube_id_match = re.search(r'(?&lt;=v=)[^&amp;#]+', movie.trailer_youtube_url)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>youtube_id_match = youtube_id_match or re.search(r'(?&lt;=be/)[^&amp;#]+', movie.trailer_youtube_url)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>trailer_youtube_id = youtube_id_match.group(0) if youtube_id_match else None</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span># Append the tile for the movie with its content filled in</p>
+<p class="p1"><span class="Apple-converted-space">        </span>content += movie_tile_content.format(</p>
+<p class="p1"><span class="Apple-converted-space">            </span>movie_title=movie.title,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>poster_image_url=movie.poster_image_url,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>trailer_youtube_id=trailer_youtube_id</p>
+<p class="p1"><span class="Apple-converted-space">        </span>)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return content</p>
+<p class="p2"><br></p>
+<p class="p1">def open_movies_page(movies):</p>
+<p class="p1"><span class="Apple-converted-space">  </span># Create or overwrite the output file</p>
+<p class="p1"><span class="Apple-converted-space">  </span>output_file = open('fresh_tomatoes.html', 'w')</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span># Replace the placeholder for the movie tiles with the actual dynamically generated content</p>
+<p class="p1"><span class="Apple-converted-space">  </span>rendered_content = main_page_content.format(movie_tiles=create_movie_tiles_content(movies))</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span># Output the file</p>
+<p class="p1"><span class="Apple-converted-space">  </span>output_file.write(main_page_head + rendered_content)</p>
+<p class="p1"><span class="Apple-converted-space">  </span>output_file.close()</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span># open the output file in the browser</p>
+<p class="p1"><span class="Apple-converted-space">  </span>url = os.path.abspath(output_file.name)</p>
+<p class="p1"><span class="Apple-converted-space">  </span>webbrowser.open('file://' + url, new=2) # open in a new tab, if possible</p>
+</body>
+</html>
